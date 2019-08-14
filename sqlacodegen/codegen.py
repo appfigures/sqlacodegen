@@ -557,6 +557,8 @@ class CodeGenerator(object):
             kwarg.append('key')
         if column.primary_key:
             kwarg.append('primary_key')
+        if column.autoincrement:
+            kwarg.append("autoincrement")
         if not column.nullable and not is_sole_pk:
             kwarg.append('nullable')
         if is_unique:
