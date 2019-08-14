@@ -333,7 +333,7 @@ class CodeGenerator(object):
     def __init__(self, metadata, noindexes=False, noconstraints=False, nojoined=False,
                  noinflect=False, noclasses=False, indentation='    ', model_separator='\n\n',
                  ignored_tables=('alembic_version', 'migrate_version'), table_model=ModelTable,
-                 class_model=ModelClass,  template=None, nocomments=False):
+                 class_model=ModelClass,  template=None, nocomments=False, external_bases = None):
         super(CodeGenerator, self).__init__()
         self.metadata = metadata
         self.noindexes = noindexes
@@ -347,6 +347,7 @@ class CodeGenerator(object):
         self.table_model = table_model
         self.class_model = class_model
         self.nocomments = nocomments
+        self.external_bases = external_bases or ["Base"]
         self.inflect_engine = self.create_inflect_engine()
         if template:
             self.template = template
@@ -424,7 +425,7 @@ class CodeGenerator(object):
 
         # Nest inherited classes in their superclasses to ensure proper ordering
         for model in classes.values():
-            if model.parent_name != 'Base':
+            if model.parent_name not in self.external_bases:
                 classes[model.parent_name].children.append(model)
                 self.models.remove(model)
 
